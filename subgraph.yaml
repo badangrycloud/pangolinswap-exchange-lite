@@ -1,4 +1,6 @@
 specVersion: 0.0.2
+description: Graphql based in pancacke exchange lite graph.
+repository: https://github.com/badangrycloud/pangolinswap-exchange-lite
 schema:
   file: ./schema.graphql
 dataSources:
