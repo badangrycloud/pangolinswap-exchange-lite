@@ -12,7 +12,7 @@ import {
   BigDecimal
 } from "@graphprotocol/graph-ts";
 
-export class PancakeFactory extends Entity {
+export class PangolinFactory extends Entity {
   constructor(id: string) {
     super();
     this.set("id", Value.fromString(id));
@@ -20,17 +20,17 @@ export class PancakeFactory extends Entity {
 
   save(): void {
     let id = this.get("id");
-    assert(id !== null, "Cannot save PancakeFactory entity without an ID");
+    assert(id !== null, "Cannot save PangolinFactory entity without an ID");
     assert(
       id.kind == ValueKind.STRING,
-      "Cannot save PancakeFactory entity with non-string ID. " +
+      "Cannot save PangolinFactory entity with non-string ID. " +
         'Considering using .toHex() to convert the "id" to a string.'
     );
-    store.set("PancakeFactory", id.toString(), this);
+    store.set("PangolinFactory", id.toString(), this);
   }
 
-  static load(id: string): PancakeFactory | null {
-    return store.get("PancakeFactory", id) as PancakeFactory | null;
+  static load(id: string): PangolinFactory | null {
+    return store.get("PangolinFactory", id) as PangolinFactory | null;
   }
 
   get id(): string {
@@ -1187,7 +1187,7 @@ export class Swap extends Entity {
   }
 }
 
-export class PancakeDayData extends Entity {
+export class PangolinDayData extends Entity {
   constructor(id: string) {
     super();
     this.set("id", Value.fromString(id));
@@ -1195,17 +1195,17 @@ export class PancakeDayData extends Entity {
 
   save(): void {
     let id = this.get("id");
-    assert(id !== null, "Cannot save PancakeDayData entity without an ID");
+    assert(id !== null, "Cannot save PangolinDayData entity without an ID");
     assert(
       id.kind == ValueKind.STRING,
-      "Cannot save PancakeDayData entity with non-string ID. " +
+      "Cannot save PangolinDayData entity with non-string ID. " +
         'Considering using .toHex() to convert the "id" to a string.'
     );
-    store.set("PancakeDayData", id.toString(), this);
+    store.set("PangolinDayData", id.toString(), this);
   }
 
-  static load(id: string): PancakeDayData | null {
-    return store.get("PancakeDayData", id) as PancakeDayData | null;
+  static load(id: string): PangolinDayData | null {
+    return store.get("PangolinDayData", id) as PangolinDayData | null;
   }
 
   get id(): string {

@@ -3,7 +3,7 @@ import { BigInt, BigDecimal, store } from "@graphprotocol/graph-ts";
 import {
   Pair,
   Token,
-  PancakeFactory,
+  PangolinFactory,
   Transaction,
   Mint as MintEvent,
   Burn as BurnEvent,
@@ -11,7 +11,7 @@ import {
   Bundle,
 } from "../../generated/schema";
 import { Mint, Burn, Swap, Transfer, Sync } from "../../generated/templates/Pair/Pair";
-import { updatePairDayData, updateTokenDayData, updatePancakeDayData, updatePairHourData } from "./dayUpdates";
+import { updatePairDayData, updateTokenDayData, updatePangolinDayData, updatePairHourData } from "./dayUpdates";
 import { getAVAXPriceInUSD, findAVAXPerToken, getTrackedVolumeUSD, getTrackedLiquidityUSD } from "./pricing";
 import { convertTokenToDecimal, ADDRESS_ZERO, FACTORY_ADDRESS, ONE_BI, ZERO_BD, BI_18 } from "./utils";
 
@@ -165,10 +165,10 @@ export function handleSync(event: Sync): void {
   let pair = Pair.load(event.address.toHex());
   let token0 = Token.load(pair.token0);
   let token1 = Token.load(pair.token1);
-  let pancake = PancakeFactory.load(FACTORY_ADDRESS);
+  let Pangolin = PangolinFactory.load(FACTORY_ADDRESS);
 
   // reset factory liquidity by subtracting only tracked liquidity
-  pancake.totalLiquidityAVAX = pancake.totalLiquidityAVAX.minus(pair.trackedReserveAVAX as BigDecimal);
+  Pangolin.totalLiquidityAVAX = Pangolin.totalLiquidityAVAX.minus(pair.trackedReserveAVAX as BigDecimal);
 
   // reset token total liquidity amounts
   token0.totalLiquidity = token0.totalLiquidity.minus(pair.reserve0);
@@ -218,8 +218,8 @@ export function handleSync(event: Sync): void {
   pair.reserveUSD = pair.reserveAVAX.times(bundle.AVAXPrice);
 
   // use tracked amounts globally
-  pancake.totalLiquidityAVAX = pancake.totalLiquidityAVAX.plus(trackedLiquidityAVAX);
-  pancake.totalLiquidityUSD = pancake.totalLiquidityAVAX.times(bundle.AVAXPrice);
+  Pangolin.totalLiquidityAVAX = Pangolin.totalLiquidityAVAX.plus(trackedLiquidityAVAX);
+  Pangolin.totalLiquidityUSD = Pangolin.totalLiquidityAVAX.times(bundle.AVAXPrice);
 
   // now correctly set liquidity amounts for each token
   token0.totalLiquidity = token0.totalLiquidity.plus(pair.reserve0);
@@ -227,7 +227,7 @@ export function handleSync(event: Sync): void {
 
   // save entities
   pair.save();
-  pancake.save();
+  Pangolin.save();
   token0.save();
   token1.save();
 }
@@ -238,7 +238,7 @@ export function handleMint(event: Mint): void {
   let mint = MintEvent.load(mints[mints.length - 1]);
 
   let pair = Pair.load(event.address.toHex());
-  let pancake = PancakeFactory.load(FACTORY_ADDRESS);
+  let Pangolin = PangolinFactory.load(FACTORY_ADDRESS);
 
   let token0 = Token.load(pair.token0);
   let token1 = Token.load(pair.token1);
@@ -260,13 +260,13 @@ export function handleMint(event: Mint): void {
 
   // update txn counts
   pair.totalTransactions = pair.totalTransactions.plus(ONE_BI);
-  pancake.totalTransactions = pancake.totalTransactions.plus(ONE_BI);
+  Pangolin.totalTransactions = Pangolin.totalTransactions.plus(ONE_BI);
 
   // save entities
   token0.save();
   token1.save();
   pair.save();
-  pancake.save();
+  Pangolin.save();
 
   mint.sender = event.params.sender;
   mint.amount0 = token0Amount as BigDecimal;
@@ -277,7 +277,7 @@ export function handleMint(event: Mint): void {
 
   updatePairDayData(event);
   updatePairHourData(event);
-  updatePancakeDayData(event);
+  updatePangolinDayData(event);
   updateTokenDayData(token0 as Token, event);
   updateTokenDayData(token1 as Token, event);
 }
@@ -292,7 +292,7 @@ export function handleBurn(event: Burn): void {
   let burn = BurnEvent.load(burns[burns.length - 1]);
 
   let pair = Pair.load(event.address.toHex());
-  let pancake = PancakeFactory.load(FACTORY_ADDRESS);
+  let Pangolin = PangolinFactory.load(FACTORY_ADDRESS);
 
   //update token info
   let token0 = Token.load(pair.token0);
@@ -312,14 +312,14 @@ export function handleBurn(event: Burn): void {
     .times(bundle.AVAXPrice);
 
   // update txn counts
-  pancake.totalTransactions = pancake.totalTransactions.plus(ONE_BI);
+  Pangolin.totalTransactions = Pangolin.totalTransactions.plus(ONE_BI);
   pair.totalTransactions = pair.totalTransactions.plus(ONE_BI);
 
   // update global counter and save
   token0.save();
   token1.save();
   pair.save();
-  pancake.save();
+  Pangolin.save();
 
   // update burn
   // burn.sender = event.params.sender
@@ -332,7 +332,7 @@ export function handleBurn(event: Burn): void {
 
   updatePairDayData(event);
   updatePairHourData(event);
-  updatePancakeDayData(event);
+  updatePangolinDayData(event);
   updateTokenDayData(token0 as Token, event);
   updateTokenDayData(token1 as Token, event);
 }
@@ -399,17 +399,17 @@ export function handleSwap(event: Swap): void {
   pair.save();
 
   // update global values, only used tracked amounts for volume
-  let pancake = PancakeFactory.load(FACTORY_ADDRESS);
-  pancake.totalVolumeUSD = pancake.totalVolumeUSD.plus(trackedAmountUSD);
-  pancake.totalVolumeAVAX = pancake.totalVolumeAVAX.plus(trackedAmountAVAX);
-  pancake.untrackedVolumeUSD = pancake.untrackedVolumeUSD.plus(derivedAmountUSD);
-  pancake.totalTransactions = pancake.totalTransactions.plus(ONE_BI);
+  let Pangolin = PangolinFactory.load(FACTORY_ADDRESS);
+  Pangolin.totalVolumeUSD = Pangolin.totalVolumeUSD.plus(trackedAmountUSD);
+  Pangolin.totalVolumeAVAX = Pangolin.totalVolumeAVAX.plus(trackedAmountAVAX);
+  Pangolin.untrackedVolumeUSD = Pangolin.untrackedVolumeUSD.plus(derivedAmountUSD);
+  Pangolin.totalTransactions = Pangolin.totalTransactions.plus(ONE_BI);
 
   // save entities
   pair.save();
   token0.save();
   token1.save();
-  pancake.save();
+  Pangolin.save();
 
   let transaction = Transaction.load(event.transaction.hash.toHex());
   if (transaction === null) {
@@ -451,15 +451,15 @@ export function handleSwap(event: Swap): void {
   // update day entities
   let pairDayData = updatePairDayData(event);
   let pairHourData = updatePairHourData(event);
-  let pancakeDayData = updatePancakeDayData(event);
+  let PangolinDayData = updatePangolinDayData(event);
   let token0DayData = updateTokenDayData(token0 as Token, event);
   let token1DayData = updateTokenDayData(token1 as Token, event);
 
   // swap specific updating
-  pancakeDayData.dailyVolumeUSD = pancakeDayData.dailyVolumeUSD.plus(trackedAmountUSD);
-  pancakeDayData.dailyVolumeAVAX = pancakeDayData.dailyVolumeAVAX.plus(trackedAmountAVAX);
-  pancakeDayData.dailyVolumeUntracked = pancakeDayData.dailyVolumeUntracked.plus(derivedAmountUSD);
-  pancakeDayData.save();
+  PangolinDayData.dailyVolumeUSD = PangolinDayData.dailyVolumeUSD.plus(trackedAmountUSD);
+  PangolinDayData.dailyVolumeAVAX = PangolinDayData.dailyVolumeAVAX.plus(trackedAmountAVAX);
+  PangolinDayData.dailyVolumeUntracked = PangolinDayData.dailyVolumeUntracked.plus(derivedAmountUSD);
+  PangolinDayData.save();
 
   // swap specific updating for pair
   pairDayData.dailyVolumeToken0 = pairDayData.dailyVolumeToken0.plus(amount0Total);

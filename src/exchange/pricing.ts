@@ -3,9 +3,9 @@ import { BigDecimal, Address } from "@graphprotocol/graph-ts/index";
 import { Pair, Token, Bundle } from "../../generated/schema";
 import { ZERO_BD, factoryContract, ADDRESS_ZERO, ONE_BD } from "./utils";
 
-const WAVAX_ADDRESS = "0xbb4cdb9cbd36b01bd1cbaebf2de08d9173bc095c";
-const BUSD_WAVAX_PAIR = "0x58f876857a02d6762e0101bb5c46a8c1ed44dc16"; // created block 589414
-const USDT_WAVAX_PAIR = "0x16b9a82891338f9ba80e2d6970fdda79d1eb0dae"; // created block 648115
+const WAVAX_ADDRESS = "0xB31f66AA3C1e785363F0875A1B74E27b85FD66c7";
+const BUSD_WAVAX_PAIR = "0x1d704f88fbdfff582bc46167e450f6f8dab83e64"; 
+const USDT_WAVAX_PAIR = "0x9ee0a4e21bd333a6bb2ab298194320b8daa26516"; 
 
 export function getAVAXPriceInUSD(): BigDecimal {
   // fetch eth prices for each stablecoin
@@ -32,13 +32,10 @@ export function getAVAXPriceInUSD(): BigDecimal {
 
 // token where amounts should contribute to tracked volume and liquidity
 let WHITELIST: string[] = [
-  "0xbb4cdb9cbd36b01bd1cbaebf2de08d9173bc095c", // WAVAX
-  "0xe9e7cea3dedca5984780bafc599bd69add087d56", // BUSD
-  "0x55d398326f99059ff775485246999027b3197955", // USDT
-  "0x8ac76a51cc950d9822d68b83fe1ad97b32cd580d", // USDC
-  "0x23396cf899ca06c4472205fc903bdb4de249d6fc", // UST
-  "0x7130d2a12b9bcbfae4f2634d864a1ee1ce3ead9c", // BTCB
-  "0x2170ed0880ac9a755fd29b2688956bd959f933f8", // WETH
+  "0xB31f66AA3C1e785363F0875A1B74E27b85FD66c7", // WAVAX
+  "0xaEb044650278731Ef3DC244692AB9F64C78FfaEA", // BUSD
+  "0xde3A24028580884448a5397872046a019649b084", // USDT
+  "0x9b71805C8D82E0DA861cA3C2b6c11A331Bd6A318", // WETH
 ];
 
 // minimum liquidity for price to get tracked

@@ -1,4 +1,4 @@
-type PancakeFactory @entity {
+type PangolinFactory @entity {
   id: ID!
 
   "Total of pairs"
@@ -180,7 +180,7 @@ type Swap @entity {
   amountUSD: BigDecimal!
 }
 
-type PancakeDayData @entity {
+type PangolinDayData @entity {
   id: ID! # timestamp rounded to current day by dividing by 86400
 
   date: Int!

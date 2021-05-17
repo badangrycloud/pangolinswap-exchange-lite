@@ -1,31 +1,31 @@
 /* eslint-disable prefer-const */
 import { PairHourData } from "../../generated/schema";
 import { BigInt, BigDecimal, ethereum } from "@graphprotocol/graph-ts";
-import { Pair, Bundle, Token, PancakeFactory, PancakeDayData, PairDayData, TokenDayData } from "../../generated/schema";
+import { Pair, Bundle, Token, PangolinFactory, PangolinDayData, PairDayData, TokenDayData } from "../../generated/schema";
 import { ONE_BI, ZERO_BD, ZERO_BI, FACTORY_ADDRESS } from "./utils";
 
-export function updatePancakeDayData(event: ethereum.Event): PancakeDayData {
-  let pancake = PancakeFactory.load(FACTORY_ADDRESS);
+export function updatePangolinDayData(event: ethereum.Event): PangolinDayData {
+  let Pangolin = PangolinFactory.load(FACTORY_ADDRESS);
   let timestamp = event.block.timestamp.toI32();
   let dayID = timestamp / 86400;
   let dayStartTimestamp = dayID * 86400;
 
-  let pancakeDayData = PancakeDayData.load(dayID.toString());
-  if (pancakeDayData === null) {
-    pancakeDayData = new PancakeDayData(dayID.toString());
-    pancakeDayData.date = dayStartTimestamp;
-    pancakeDayData.dailyVolumeUSD = ZERO_BD;
-    pancakeDayData.dailyVolumeAVAX = ZERO_BD;
-    pancakeDayData.totalVolumeUSD = ZERO_BD;
-    pancakeDayData.totalVolumeAVAX = ZERO_BD;
-    pancakeDayData.dailyVolumeUntracked = ZERO_BD;
+  let PangolinDayData = PangolinDayData.load(dayID.toString());
+  if (PangolinDayData === null) {
+    PangolinDayData = new PangolinDayData(dayID.toString());
+    PangolinDayData.date = dayStartTimestamp;
+    PangolinDayData.dailyVolumeUSD = ZERO_BD;
+    PangolinDayData.dailyVolumeAVAX = ZERO_BD;
+    PangolinDayData.totalVolumeUSD = ZERO_BD;
+    PangolinDayData.totalVolumeAVAX = ZERO_BD;
+    PangolinDayData.dailyVolumeUntracked = ZERO_BD;
   }
-  pancakeDayData.totalLiquidityUSD = pancake.totalLiquidityUSD;
-  pancakeDayData.totalLiquidityAVAX = pancake.totalLiquidityAVAX;
-  pancakeDayData.totalTransactions = pancake.totalTransactions;
-  pancakeDayData.save();
+  PangolinDayData.totalLiquidityUSD = Pangolin.totalLiquidityUSD;
+  PangolinDayData.totalLiquidityAVAX = Pangolin.totalLiquidityAVAX;
+  PangolinDayData.totalTransactions = Pangolin.totalTransactions;
+  PangolinDayData.save();
 
-  return pancakeDayData as PancakeDayData;
+  return PangolinDayData as PangolinDayData;
 }
 
 export function updatePairDayData(event: ethereum.Event): PairDayData {
