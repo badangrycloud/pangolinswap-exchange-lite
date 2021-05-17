@@ -5,27 +5,27 @@ import { Pair, Bundle, Token, PangolinFactory, PangolinDayData, PairDayData, Tok
 import { ONE_BI, ZERO_BD, ZERO_BI, FACTORY_ADDRESS } from "./utils";
 
 export function updatePangolinDayData(event: ethereum.Event): PangolinDayData {
-  let Pangolin = PangolinFactory.load(FACTORY_ADDRESS);
+  let pangolin = PangolinFactory.load(FACTORY_ADDRESS);
   let timestamp = event.block.timestamp.toI32();
   let dayID = timestamp / 86400;
   let dayStartTimestamp = dayID * 86400;
 
-  let PangolinDayData = PangolinDayData.load(dayID.toString());
-  if (PangolinDayData === null) {
-    PangolinDayData = new PangolinDayData(dayID.toString());
-    PangolinDayData.date = dayStartTimestamp;
-    PangolinDayData.dailyVolumeUSD = ZERO_BD;
-    PangolinDayData.dailyVolumeAVAX = ZERO_BD;
-    PangolinDayData.totalVolumeUSD = ZERO_BD;
-    PangolinDayData.totalVolumeAVAX = ZERO_BD;
-    PangolinDayData.dailyVolumeUntracked = ZERO_BD;
+  let pangolinDayData = PangolinDayData.load(dayID.toString());
+  if (pangolinDayData === null) {
+    pangolinDayData = new PangolinDayData(dayID.toString());
+    pangolinDayData.date = dayStartTimestamp;
+    pangolinDayData.dailyVolumeUSD = ZERO_BD;
+    pangolinDayData.dailyVolumeAVAX = ZERO_BD;
+    pangolinDayData.totalVolumeUSD = ZERO_BD;
+    pangolinDayData.totalVolumeAVAX = ZERO_BD;
+    pangolinDayData.dailyVolumeUntracked = ZERO_BD;
   }
-  PangolinDayData.totalLiquidityUSD = Pangolin.totalLiquidityUSD;
-  PangolinDayData.totalLiquidityAVAX = Pangolin.totalLiquidityAVAX;
-  PangolinDayData.totalTransactions = Pangolin.totalTransactions;
-  PangolinDayData.save();
+  pangolinDayData.totalLiquidityUSD = pangolin.totalLiquidityUSD;
+  pangolinDayData.totalLiquidityAVAX = pangolin.totalLiquidityAVAX;
+  pangolinDayData.totalTransactions = pangolin.totalTransactions;
+  pangolinDayData.save();
 
-  return PangolinDayData as PangolinDayData;
+  return pangolinDayData as PangolinDayData;
 }
 
 export function updatePairDayData(event: ethereum.Event): PairDayData {
@@ -96,7 +96,7 @@ export function updateTokenDayData(token: Token, event: ethereum.Event): TokenDa
     tokenDayData.token = token.id;
     tokenDayData.priceUSD = token.derivedAVAX.times(bundle.AVAXPrice);
     tokenDayData.dailyVolumeToken = ZERO_BD;
-    tokenDayData.dailyVolumeAVAX = ZERO_BD;
+    tokenDayData.dailyVolumeAVAX= ZERO_BD;
     tokenDayData.dailyVolumeUSD = ZERO_BD;
     tokenDayData.dailyTxns = ZERO_BI;
     tokenDayData.totalLiquidityUSD = ZERO_BD;
